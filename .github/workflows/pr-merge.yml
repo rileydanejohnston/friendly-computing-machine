@@ -28,48 +28,66 @@ jobs:
 
       # --data '{ "definition": $gitConfigDefinition }' \
       # --data '{ definition: { "authorizations": {}, "labels": [], "inputs": { "region": "us-south" }, "compliance_profile": {}, "members": [], "uses": [], "name": "git-config", "locator_id": "1082e7d2-5e2f-0a11-a3bc-f88a8e1931fc.3ba7b7ba-cef3-4511-bf76-8652a1961a08-global", "description": "" } }' \
-      
+      # --data '{ "definition": { "inputs": { "region": "IT-WORKS" } } }')
+
+      # IAM_TOKEN=$(curl -X POST "https://iam.test.cloud.ibm.com/identity/token" \
+      # -H "Content-Type: application/x-www-form-urlencoded" \
+      # -H "Accept: application/json" \
+      # -d "grant_type=urn:ibm:params:oauth:grant-type:apikey&apikey=${{ secrets.IBM_CLOUD_API_KEY }}" | jq -r .access_token)
+
+
+      # PROJECT_ID='362d3a4f-0ce9-490c-9629-77b97a3d72ad'
+      # CONFIG_ID='036374b9-cf53-4292-af7c-3688fa502ca3'
+      # BASE_URL='https://projects-dev.api.test.cloud.ibm.com'
+
+      # DEFINITION=$(jq '.definition' configs/git-config.json)
+
+      # RESPONSE=$(curl -X PATCH "${BASE_URL}/v1/projects/${PROJECT_ID}/configs/${CONFIG_ID}" \
+      # --header "Authorization: Bearer ${IAM_TOKEN}" \
+      # --header "Accept: application/json" \
+      # --header "Content-Type: application/json" \
+      # --data "{ \"definition\": ${DEFINITION} }")
+
+      # echo $RESPONSE
+
 
       - name: get token
         run: |
-          IAM_TOKEN=$(curl -X POST "https://iam.cloud.ibm.com/identity/token" \
+          IAM_TOKEN=$(curl -X POST "https://iam.test.cloud.ibm.com/identity/token" \
           -H "Content-Type: application/x-www-form-urlencoded" \
           -H "Accept: application/json" \
           -d "grant_type=urn:ibm:params:oauth:grant-type:apikey&apikey=${{ secrets.IBM_CLOUD_API_KEY }}" | jq -r .access_token)
 
-          echo $IAM_TOKEN
-
-      - name: check which configs were updated
-        run: |
-          changed_files=$(git diff --name-only HEAD^ HEAD)
-
-          config_files=()
-
-          for file in $changed_files; do
-            if [[ $file == configs/* ]]; then
-              config_files+=($file)
-            fi
-          done
-
-          echo "changed files: $changed_files"
-          echo "config files: $config_files"
-
-      - name: print JSON contents
-        run: |
-          gitConfigDefinition=$(jq '.definition' configs/git-config.json)
-          auths=$(jq '.definition.authorizations' configs/git-config.json)
-
-          echo $gitConfigDefinition
-          echo $auths
-
-          PROJECT_ID='362d3a4f-0ce9-490c-9629-77b97a3d72ad'
-          CONFIG_ID='036374b9-cf53-4292-af7c-3688fa502ca3'
           BASE_URL='https://projects-dev.api.test.cloud.ibm.com'
 
-          RESPONSE=$(curl -X PATCH --location --header "Authorization: Bearer ${IAM_TOKEN}" \
-          --header "Accept: application/json" \
-          --header "Content-Type: application/json" \
-          --data '{ "definition": { "name": "git-config", "inputs": { "region": "us-south" }, "locator_id": "1082e7d2-5e2f-0a11-a3bc-f88a8e1931fc.3ba7b7ba-cef3-4511-bf76-8652a1961a08-global", "description": "" } }' \
-          "${BASE_URL}/v1/projects/${PROJECT_ID}/configs/${CONFIG_ID}")
+          # get files changed in the PR
+          changed_files=$(git diff --name-only HEAD^ HEAD)
 
-          echo $RESPONSE
+          for file in $changed_files; do
+
+            # find config files that were changed
+            if [[ $file == configs/* ]]; then
+              echo "config file updated: ${file}"
+                            
+              # extract data from config files
+              PROJECT_ID=$(jq -r '.project_id' $file)
+              CONFIG_ID=$(jq -r '.config_id' $file)
+              INPUTS=$(jq '.definition.inputs' $file)
+
+              echo "project id: ${PROJECT_ID}"
+              echo "config id: ${CONFIG_ID}"
+
+              # update config definition inputs
+              RESPONSE=$(curl -X PATCH "${BASE_URL}/v1/projects/${PROJECT_ID}/configs/${CONFIG_ID}" \
+              --header "Authorization: Bearer ${IAM_TOKEN}" \
+              --header "Accept: application/json" \
+              --header "Content-Type: application/json" \
+              --data "{ \"definition\": { \"inputs\": ${INPUTS} } }")
+
+              echo $RESPONSE
+              
+            # file isn't a config
+            else
+              echo "not a config file: ${file}"
+            fi
+          done
