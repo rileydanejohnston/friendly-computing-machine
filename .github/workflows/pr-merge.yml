@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI
+name: Git Integrations Workflow
 
 # Controls when the workflow will run
 on:
@@ -26,32 +26,7 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
 
-      # --data '{ "definition": $gitConfigDefinition }' \
-      # --data '{ definition: { "authorizations": {}, "labels": [], "inputs": { "region": "us-south" }, "compliance_profile": {}, "members": [], "uses": [], "name": "git-config", "locator_id": "1082e7d2-5e2f-0a11-a3bc-f88a8e1931fc.3ba7b7ba-cef3-4511-bf76-8652a1961a08-global", "description": "" } }' \
-      # --data '{ "definition": { "inputs": { "region": "IT-WORKS" } } }')
-
-      # IAM_TOKEN=$(curl -X POST "https://iam.test.cloud.ibm.com/identity/token" \
-      # -H "Content-Type: application/x-www-form-urlencoded" \
-      # -H "Accept: application/json" \
-      # -d "grant_type=urn:ibm:params:oauth:grant-type:apikey&apikey=${{ secrets.IBM_CLOUD_API_KEY }}" | jq -r .access_token)
-
-
-      # PROJECT_ID='362d3a4f-0ce9-490c-9629-77b97a3d72ad'
-      # CONFIG_ID='036374b9-cf53-4292-af7c-3688fa502ca3'
-      # BASE_URL='https://projects-dev.api.test.cloud.ibm.com'
-
-      # DEFINITION=$(jq '.definition' configs/git-config.json)
-
-      # RESPONSE=$(curl -X PATCH "${BASE_URL}/v1/projects/${PROJECT_ID}/configs/${CONFIG_ID}" \
-      # --header "Authorization: Bearer ${IAM_TOKEN}" \
-      # --header "Accept: application/json" \
-      # --header "Content-Type: application/json" \
-      # --data "{ \"definition\": ${DEFINITION} }")
-
-      # echo $RESPONSE
-
-
-      - name: get token
+      - name: update project configs
         run: |
           IAM_TOKEN=$(curl -X POST "https://iam.test.cloud.ibm.com/identity/token" \
           -H "Content-Type: application/x-www-form-urlencoded" \
