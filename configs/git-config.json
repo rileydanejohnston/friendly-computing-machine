@@ -5,7 +5,7 @@
     "authorizations": {},
     "labels": [],
     "inputs": {
-       "region": "us-east"
+       "region": "FOO"
     },
     "compliance_profile": {},
     "members": [],
