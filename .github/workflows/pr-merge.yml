@@ -33,9 +33,6 @@ jobs:
           -H "Accept: application/json" \
           -d "grant_type=urn:ibm:params:oauth:grant-type:apikey&apikey=${{ secrets.IBM_CLOUD_API_KEY }}" | jq -r .access_token)
 
-          echo $IAM_TOKEN
-          echo "IAM token: ${IAM_TOKEN}"
-
           BASE_URL='https://projects-dev.api.test.cloud.ibm.com'
 
           # get files changed in the PR
