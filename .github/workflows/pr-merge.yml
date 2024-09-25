@@ -1,12 +1,8 @@
-# This is a basic workflow to help you get started with Actions
-
-name: Git Integrations Workflow
+name: Projects Git Integration Workflow
 
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
-  # push:
-  #   branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
     types: [closed]
@@ -16,7 +12,7 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
+  # This workflow contains a single job called "update-config"
   update-config:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
@@ -28,12 +24,12 @@ jobs:
 
       - name: update project configs
         run: |
-          IAM_TOKEN=$(curl -X POST "https://iam.test.cloud.ibm.com/identity/token" \
+          IAM_TOKEN=$(curl -X POST "${{ vars.IAM_URL }}/identity/token" \
           -H "Content-Type: application/x-www-form-urlencoded" \
           -H "Accept: application/json" \
           -d "grant_type=urn:ibm:params:oauth:grant-type:apikey&apikey=${{ secrets.IBM_CLOUD_API_KEY }}" | jq -r .access_token)
 
-          BASE_URL='https://projects-dev.api.test.cloud.ibm.com'
+          BASE_URL=${{ vars.PROJECTS_API_BASE_URL }}
 
           # get files changed in the PR
           changed_files=$(git diff --name-only HEAD^ HEAD)
@@ -41,28 +37,26 @@ jobs:
           for file in $changed_files; do
 
             # find config files that were changed
-            if [[ $file == configs/* ]]; then
-              echo "config file updated: ${file}"
+            if [[ $file == ${{ vars.CONFIG_FOLDER_PATH }}/* ]]; then
+              echo "Config file updated: ${file}"
                             
               # extract data from config files
               PROJECT_ID=$(jq -r '.project_id' $file)
               CONFIG_ID=$(jq -r '.config_id' $file)
-              INPUTS=$(jq '.definition.inputs' $file)
+              DEF=$(jq '.definition' $file)
 
-              echo "project id: ${PROJECT_ID}"
-              echo "config id: ${CONFIG_ID}"
+              echo "Project ID: ${PROJECT_ID}"
+              echo "Config ID: ${CONFIG_ID}"
 
-              # update config definition inputs
+              # update config definition
               RESPONSE=$(curl -X PATCH "${BASE_URL}/v1/projects/${PROJECT_ID}/configs/${CONFIG_ID}" \
               --header "Authorization: Bearer ${IAM_TOKEN}" \
               --header "Accept: application/json" \
               --header "Content-Type: application/json" \
-              --data "{ \"definition\": { \"inputs\": ${INPUTS} } }")
+              --data "{ \"definition\": ${DEF} }")
 
               echo $RESPONSE
-              
-            # file isn't a config
             else
-              echo "not a config file: ${file}"
+              echo "Not a project configuration file: ${file}"
             fi
           done
