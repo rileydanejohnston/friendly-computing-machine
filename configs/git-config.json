@@ -5,7 +5,7 @@
     "authorizations": {},
     "labels": [],
     "inputs": {
-      "region": "UPDATE-CONFIG-2"
+      "region": "ON-SAVE"
     },
     "compliance_profile": {},
     "members": [],
