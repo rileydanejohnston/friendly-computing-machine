@@ -5,7 +5,7 @@
     "authorizations": {},
     "labels": [],
     "inputs": {
-      "region": "before--commit"
+      "region": "AFTER--commit"
     },
     "compliance_profile": {},
     "members": [],
