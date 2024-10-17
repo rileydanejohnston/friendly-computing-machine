@@ -5,7 +5,7 @@
     "authorizations": {},
     "labels": [],
     "inputs": {
-      "region": "ON-SAVE"
+      "region": "before-commit"
     },
     "compliance_profile": {},
     "members": [],
