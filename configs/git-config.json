@@ -1,6 +1,13 @@
 {
-  "config_id": "036374b9-cf53-4292-af7c-3688fa502ca3",
-  "project_id": "362d3a4f-0ce9-490c-9629-77b97a3d72ad",
+  "id": "036374b9-cf53-4292-af7c-3688fa502ca3",
+  "project": {
+    "id": "362d3a4f-0ce9-490c-9629-77b97a3d72ad",
+    "crn": "crn:v1:staging:public:project:us-south:a/e490f801b10f4439a3cc5d00c79b30bf:362d3a4f-0ce9-490c-9629-77b97a3d72ad::",
+    "definition": {
+      "name": "git-test"
+    },
+    "href": "https://projects.api.test.cloud.ibm.com/v1/projects/362d3a4f-0ce9-490c-9629-77b97a3d72ad"
+  },
   "definition": {
     "authorizations": {},
     "labels": [],
