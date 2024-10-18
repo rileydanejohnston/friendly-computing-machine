@@ -5,7 +5,7 @@
     "authorizations": {},
     "labels": [],
     "inputs": {
-       "region": "DOG"
+      "region": "dog"
     },
     "compliance_profile": {},
     "members": [],
