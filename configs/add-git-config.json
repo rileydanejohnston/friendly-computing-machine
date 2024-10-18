@@ -1,0 +1,14 @@
+{
+  "config_id": "f7df253e-132f-44c5-ba29-e6d00e22a52e",
+  "project_id": "362d3a4f-0ce9-490c-9629-77b97a3d72ad",
+  "definition": {
+    "authorizations": {},
+    "labels": [],
+    "compliance_profile": {},
+    "members": [],
+    "uses": [],
+    "name": "add-git-config",
+    "locator_id": "1082e7d2-5e2f-0a11-a3bc-f88a8e1931fc.3ba7b7ba-cef3-4511-bf76-8652a1961a08-global",
+    "description": ""
+  }
+}
