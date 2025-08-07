@@ -1,0 +1,15 @@
+{
+  "config_id": "6b9eee9d-0a0e-49b1-857f-286f0f7dd076",
+  "project_id": "d0a142d0-8ecc-417c-b1c3-f0439e2d6295",
+  "definition": {
+    "authorizations": {},
+    "compliance_profile": {},
+    "members": [],
+    "uses": [],
+    "name": "static-website-19fa",
+    "description": "",
+    "locator_id": "1082e7d2-5e2f-0a11-a3bc-f88a8e1931fc.cd596f95-95a2-4f21-9b84-477f21fd1e95-global",
+    "inputs": {},
+    "labels": []
+  }
+}
